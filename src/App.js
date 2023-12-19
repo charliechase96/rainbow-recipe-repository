@@ -5,6 +5,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import SignUp from './Components/SignUp';
 import Login from './Components/Login';
 import RecipesHome from './Components/RecipesHome';
+import IngredientList from './Components/IngredientList';
 
 
 
@@ -23,7 +24,7 @@ function App() {
     // Cleanup subscription on unmount
     return () => unsubscribe();
   }, []);
-  
+
   return (
     <>
     <BrowserRouter>
@@ -31,6 +32,7 @@ function App() {
         <Route path="/" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/home" element={<RecipesHome />} />
+        <Route path="/ingredient-list" element={<IngredientList />} />
       </Routes>
     </BrowserRouter> 
     </>
