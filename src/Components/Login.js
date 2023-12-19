@@ -1,42 +1,25 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { auth } from '../firebase';
+import React from 'react';
+import { auth, googleAuthProvider } from '../firebase';
+import { signInWithPopup } from 'firebase/auth';
 
-function Login({ onLogin }) {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+function Login() {
 
-  const navigate = useNavigate();
-
-  function signIn(e) {
-    e.preventDefault();
-    auth.signInWithEmailAndPassword(email, password)
-      .then((authUser) => {
-        onLogin(authUser);
-        navigate('/home');
+  function signInWithGoogle() {
+    signInWithPopup(auth, googleAuthProvider)
+      .then((result) => {
+        console.log(result);
+        // Handle successful login
       })
       .catch((error) => {
-        alert(error.message);
+        console.error(error);
+        // Handle errors
       });
-}
+  };
 
   return (
     <div>
-      <form onSubmit={signIn}>
-        <h1>Login</h1>
-        <input 
-            type="email" 
-            value={email} 
-            onChange={(e) => setEmail(e.target.value)} placeholder="Email"
-        />
-        <input 
-            type="password" 
-            value={password} 
-            onChange={(e) => setPassword(e.target.value)} placeholder="Password"
-        />
-        <button type="submit">Login</button>
-      </form>
-      <Link to="/signup">Don't have an account? Sign Up</Link>
+        <h3>Login with Google</h3>
+        <button onClick={signInWithGoogle}>Login with Google</button>
     </div>
   );
 }

@@ -1,4 +1,6 @@
 import './App.css';
+import { useEffect } from 'react';
+import { auth } from './firebase';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import SignUp from './Components/SignUp';
 import Login from './Components/Login';
@@ -7,6 +9,21 @@ import RecipesHome from './Components/RecipesHome';
 
 
 function App() {
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged(user => {
+      if (user) {
+        // User is signed in.
+        console.log(user);
+      } else {
+        // No user is signed in.
+      }
+    });
+  
+    // Cleanup subscription on unmount
+    return () => unsubscribe();
+  }, []);
+  
   return (
     <>
     <BrowserRouter>
