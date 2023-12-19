@@ -7,15 +7,18 @@ function Login({ onLogin }) {
   const [password, setPassword] = useState('');
 
   const navigate = useNavigate();
-  
+
   function signIn(e) {
     e.preventDefault();
     auth.signInWithEmailAndPassword(email, password)
-      .then((authUser) => onLogin(authUser))
-      .catch((error) => alert(error.message));
-
-      navigate('/home');
-  };
+      .then((authUser) => {
+        onLogin(authUser);
+        navigate('/home');
+      })
+      .catch((error) => {
+        alert(error.message);
+      });
+}
 
   return (
     <div>
