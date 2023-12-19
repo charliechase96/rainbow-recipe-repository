@@ -40,7 +40,7 @@ function Login() {
   return (
     <div>
       <form onSubmit={handleLogin}>
-        <h1>Login</h1>
+        <h1>Login with Email and Password</h1>
         <input 
           type="email" 
           value={email} 
