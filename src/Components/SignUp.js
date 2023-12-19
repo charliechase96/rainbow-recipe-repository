@@ -33,7 +33,7 @@ function SignUp() {
             onChange={(e) => setPassword(e.target.value)} placeholder="Password"
         />
         <button type="submit">Sign Up</button>
-        <Link to="/login">Already have an account? Login</Link>
+        <Link to="/">Already have an account? Login</Link>
       </form>
     </div>
   );

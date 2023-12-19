@@ -3,7 +3,7 @@ import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
     apiKey: "AIzaSyC47TQQVuMd7wNB6xF2SYNhVJM6VZ0Ems8",
-    authDomain: "recipe-app-charliechase96.firebaseapp.com",
+    authDomain: "recipe-app-lemon-three.vercel.app",
     projectId: "recipe-app-charliechase96",
     storageBucket: "recipe-app-charliechase96.appspot.com",
     messagingSenderId: "1056025742449",
