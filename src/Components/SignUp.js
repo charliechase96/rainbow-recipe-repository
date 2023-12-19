@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { auth } from '../firebase';
 
 function SignUp() {
@@ -27,6 +28,7 @@ function SignUp() {
             onChange={(e) => setPassword(e.target.value)} placeholder="Password"
         />
         <button type="submit">Sign Up</button>
+        <Link to="/">Already have an account? Login</Link>
       </form>
     </div>
   );

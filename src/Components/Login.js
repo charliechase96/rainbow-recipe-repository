@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { auth } from '../firebase';
 
 function Login({ onLogin }) {
@@ -28,6 +29,7 @@ function Login({ onLogin }) {
         />
         <button type="submit">Login</button>
       </form>
+      <Link to="/signup">Don't have an account? Sign Up</Link>
     </div>
   );
 }
