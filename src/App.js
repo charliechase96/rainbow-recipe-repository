@@ -1,24 +1,44 @@
 import './App.css';
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
+import React, { useState, useEffect } from 'react';
+import { auth } from './firebase';
+import Login from './Components/Login';
+import SignUp from './Components/SignUp';
+import AuthNavigation from './Components/AuthNavigation';
 
 function App() {
+  const [user, setUser] = useState(null);
+  const [isLogin, setIsLogin] = useState(true);
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyC47TQQVuMd7wNB6xF2SYNhVJM6VZ0Ems8",
-    authDomain: "recipe-app-charliechase96.firebaseapp.com",
-    projectId: "recipe-app-charliechase96",
-    storageBucket: "recipe-app-charliechase96.appspot.com",
-    messagingSenderId: "1056025742449",
-    appId: "1:1056025742449:web:b0e22c86e90934656c5fd0",
-    measurementId: "G-JS057YYK74"
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((authUser) => {
+      if (authUser) {
+        setUser(authUser);
+      } else {
+        setUser(null);
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  const handleLogout = () => {
+    auth.signOut();
   };
 
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
-
   return (
-    <p></p>
+    <div className="App">
+      {user ? (
+        <div>
+          <h2>Welcome, {user.email}!</h2>
+          <button onClick={handleLogout}>Logout</button>
+        </div>
+      ) : (
+        <div>
+          {isLogin ? <Login onLogin={setUser} /> : <SignUp />}
+          <AuthNavigation isLogin={isLogin} setIsLogin={setIsLogin} />
+        </div>
+      )}
+    </div>
   );
 }
 
