@@ -173,14 +173,21 @@ function IngredientList() {
                 placeholder='ingredient name'
                 value={name}
                 onChange={handleIngredientName}
+                required
                 />
             <input
                 type="text"
                 placeholder='amount'
                 value={amount}
                 onChange={handleAmountChange}
+                required
             />
-            <button type="submit">Add</button>
+            <button 
+                type="submit"
+                disabled={!name || !amount}
+            >
+                Add
+            </button>
             </form>
             <ul>
             {ingredients.map((ingredient, index) => (

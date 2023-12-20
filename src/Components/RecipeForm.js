@@ -102,15 +102,22 @@ function RecipeForm() {
                 <input 
                     type="text" 
                     value={recipeName} 
-                    onChange={(e) => setRecipeName(e.target.value)} placeholder="Recipe Name" 
+                    onChange={(e) => setRecipeName(e.target.value)} placeholder="Recipe Name"
+                    required
                 />
                 <label>Servings</label>
                 <input 
                     type="number" 
                     value={servings} 
-                    onChange={(e) => setServings(e.target.value)} placeholder="Servings" 
+                    onChange={(e) => setServings(e.target.value)} placeholder="Servings"
+                    required 
                 />
-                <button type="submit">Create Recipe</button>
+                <button 
+                disabled={!recipeName || !servings}
+                type="submit"
+                >
+                    Create Recipe
+                </button>
             </form>
             <br/>
             <h3>Click a recipe to see the ingredients list!</h3>

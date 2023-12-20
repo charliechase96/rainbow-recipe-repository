@@ -33,14 +33,21 @@ function SignUp() {
           value={email} 
           onChange={(e) => setEmail(e.target.value)} 
           placeholder="Email"
+          required
         />
         <input 
           type="password" 
           value={password} 
           onChange={(e) => setPassword(e.target.value)} 
           placeholder="Password"
+          required
         />
-        <button type="submit">Sign Up</button>
+        <button 
+          type="submit"
+          disabled={!email || !password}
+        >
+          Sign Up
+        </button>
       </form>
       <br/>
       <Link to="/" element={<Login />}>Already have an account? Log In!</Link>
