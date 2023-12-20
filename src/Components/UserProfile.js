@@ -2,12 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { auth, firestore } from '../firebase';
 import { onAuthStateChanged } from 'firebase/auth';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 import RecipesHome from './RecipesHome';
 
 function UserProfile() {
     const [userProfile, setUserProfile] = useState(null);
-
     const navigate = useNavigate();
     const { userId } = useParams();
 
@@ -28,25 +27,31 @@ function UserProfile() {
                 if (docSnap.exists()) {
                     // Set user profile data if document exists
                     setUserProfile(docSnap.data());
-                    navigate("/home");
                 } else {
-                    // Redirect to signup if user profile doesn't exist
-                    console.error("User profile does not exist.");
-                    navigate('/signup');
+                    // User profile doesn't exist, so create a new one
+                    const newUserProfile = {
+                        email: user.email, // email from the authentication user object
+                        // No password here, as it's not stored directly in the profile
+                    };
+
+                    await setDoc(userProfileRef, newUserProfile);
+                    setUserProfile(newUserProfile);
                 }
+
+                // Navigate to /home if UIDs match and the profile is set
+                navigate('/home');
             } else {
-                // No user is signed in
-                navigate('/'); // or wherever you handle logging in
+                // No user is signed in, redirect to the login page
+                navigate('/');
             }
         });
 
         return unsubscribe; // Detach listener on unmount
-    }, [navigate, userId]); // Depend on navigate and userId
+    }, [navigate, userId]);
 
-    // Redirect to signup if userProfile is null (as a fallback, might be redundant with the useEffect logic)
     if (!userProfile) {
-        navigate('/signup');
-        return null; // Early return to stop rendering the rest of the component
+        // Optionally handle the loading or absence of profile data here
+        return null; // Or display a loading indicator or error message
     }
 
     // Render the RecipesHome component or user profile details
