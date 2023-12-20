@@ -5,6 +5,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import SignUp from './Components/SignUp';
 import Login from './Components/Login';
 import RecipesHome from './Components/RecipesHome';
+import RecipeForm from './Components/RecipeForm';
 import IngredientList from './Components/IngredientList';
 
 
@@ -32,7 +33,8 @@ function App() {
         <Route path="/" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/home" element={<RecipesHome />} />
-        <Route path="/ingredient-list" element={<IngredientList />} />
+        <Route path="/recipe-form" element={<RecipeForm />} />
+        <Route path="/ingredients-list" element={<IngredientList />} />
       </Routes>
     </BrowserRouter> 
     </>
