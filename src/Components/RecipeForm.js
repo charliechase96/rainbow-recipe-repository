@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { getAuth } from "firebase/auth";
-import { firestore } from './firebase'
+import { fetchRecipes, addRecipe, deleteRecipe } from '../firestoreService';
 
 function RecipeForm() {
     const [recipeName, setRecipeName] = useState('');
@@ -11,35 +11,30 @@ function RecipeForm() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const fetchRecipes = async () => {
+        async function getRecipes() {
             try {
-                const snapshot = await firestore.collection('recipes').get();
-                const recipesList = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                const recipesList = await fetchRecipes();
                 setRecipes(recipesList);
             } catch (error) {
-                console.error("Error fetching recipes:", error);
             }
         };
-
-        fetchRecipes();
+        getRecipes();
     }, []);
 
 
-    function handleDeleteRecipe(recipeId) {
-        firestore.collection('recipes').doc(recipeId).delete()
-        .then(() => {
+    const handleDeleteRecipe = async (recipeId) => {
+        try {
+            await deleteRecipe(recipeId);
             setRecipes(recipes.filter(recipe => recipe.id !== recipeId));
-        })
-        .catch(error => {
-            console.error("Error deleting recipe:", error);
-        });
+        } catch (error) {
+        }
     };
 
     function openIngredientsList(recipeId) {
         navigate('/ingredients-list', { state: { recipeId, recipes } });
     };
 
-    function handleRecipePost(e) {
+    const handleRecipePost = async (e) => {
         e.preventDefault();
     
         const newRecipe = {
@@ -52,13 +47,13 @@ function RecipeForm() {
             }
         };
 
-        firestore.collection('recipes').add(newRecipe)
-            .then(docRef => {
-                setRecipes([...recipes, { ...newRecipe, id: docRef.id}])
-                .catch(error => {
-                    console.error("Error adding recipe:", error);
-                })
-            });
+        try {
+            const addedRecipe = await addRecipe(newRecipe);
+            setRecipes([...recipes, addedRecipe]);
+        }
+            catch(error) {
+                console.error("Error adding recipe:", error);
+            }
     
         const url = `https://firestore.googleapis.com/v1/projects/recipe-app-charliechase96/databases/(default)/documents/recipes`;
     
@@ -91,8 +86,8 @@ function RecipeForm() {
     function formatRecipeData(recipe) {
         return {
             fields: {
-                name: { stringValue: recipeName },
-                servings: { integerValue: servings.toString() },
+                name: { stringValue: recipe.fields.name },
+                servings: { integerValue: recipe.fields.servings.toString() },
                 ingredients: {
                     arrayValue: { values: [] }
                 }
@@ -125,14 +120,14 @@ function RecipeForm() {
                 <li 
                         key={index}
                     >
-                    Name: {recipe.fields.name.stringValue}  Servings: {recipe.fields.servings.integerValue}
+                    Name: {recipe.name}  Servings: {recipe.servings}
                     <button 
                         onClick={() => openIngredientsList(recipe.id)}
                     >
                         Ingredients
                     </button>
                     <button 
-                        onClick={() => handleDeleteRecipe(index)}
+                        onClick={() => handleDeleteRecipe(recipe.id)}
                     >
                         ✖
                     </button>

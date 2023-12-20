@@ -65,10 +65,11 @@ function IngredientList() {
                 }
 
                 const data = await response.json();
+                console.log(data.fields.ingredients.arrayValue);
                 const fetchedIngredients = data.fields.ingredients.arrayValue.values.map(item => {
                     return {
-                        name: item.mapValue.fields.name.stringValue,
-                        amount: item.mapValue.fields.amount.stringValue
+                        name: item.fields.name.stringValue,
+                        amount: item.fields.amount.stringValue
                     };
                 });
 
