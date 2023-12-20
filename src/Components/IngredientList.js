@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import RecipesHome from './RecipesHome';
 import { getAuth } from 'firebase/auth';
+import Ingredient from './Ingredient';
 
 function IngredientList() {
     const location = useLocation();
@@ -125,7 +126,7 @@ function IngredientList() {
     }
     
 
-    function handleRemove(index) {
+    function handleRemoveIngredient(index) {
         const updatedIngredients = ingredients.filter((_, i) => i !== index);
         const formattedData = formatIngredientsData(updatedIngredients);
     
@@ -191,10 +192,13 @@ function IngredientList() {
             </form>
             <ul>
             {ingredients.map((ingredient, index) => (
-                <li key={index}>
-                Name: {ingredient.name} Amount: {ingredient.amount}
-            <button onClick={() => handleRemove(index)}>X</button>
-            </li>
+                <li >
+                    <Ingredient 
+                        key={index} 
+                        ingredient={ingredient}
+                        onRemoveIngredient={handleRemoveIngredient}
+                    />
+                </li>
             ))}
         </ul>
         </div>
