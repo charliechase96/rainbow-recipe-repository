@@ -1,104 +1,72 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { getAuth } from "firebase/auth";
-import { fetchRecipes, addRecipe, deleteRecipe } from '../firestoreService';
+import { db } from "../firebase";
 import Recipe from "./Recipe";
+import { addDoc, doc, deleteDoc, collection } from "firebase/firestore";
 
 function RecipeForm() {
+
+    // might need to add "const id = useId" and import at top
     const [recipeName, setRecipeName] = useState('');
     const [servings, setServings] = useState(0);
     const [recipes, setRecipes] = useState([]);
 
     const navigate = useNavigate();
 
+    const url = "https://firestore.googleapis.com/v1/projects/recipe-app-charliechase96/databases/(default)/documents/recipes";
+
     useEffect(() => {
-        async function getRecipes() {
-            try {
-                const recipesList = await fetchRecipes();
-                setRecipes(recipesList);
-            } catch (error) {
-            }
-        };
-        getRecipes();
-    }, []);
-
-
-    const handleDeleteRecipe = async (recipeId) => {
-        try {
-            await deleteRecipe(recipeId);
-            setRecipes(recipes.filter(recipe => recipe.id !== recipeId));
-        } catch (error) {
+        function fetchRecipes() {
+          fetch(url)
+            .then(response => {
+              if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+              }
+              return response.json();
+            })
+            .then(data => {
+              setRecipes(data);
+            });
         }
-    };
+        fetchRecipes();
+      }, []);
+
+
+      function deleteRecipe(userId, recipeId, setRecipes) {
+        const recipeRef = doc(db, 'userProfiles', userId, 'recipes', recipeId);
+
+        deleteDoc(recipeRef)
+            .then(() => {
+                console.log(`Recipe with ID ${recipeId} deleted successfully.`);
+                setRecipes(recipes.filter(recipe => recipe.id !== recipeId));
+            })
+            .catch(error => {
+                console.error("Error deleting recipe:", error);
+            })
+      }
 
     function openIngredientsList(recipeId) {
-        navigate('/ingredients-list', { state: { recipeId, recipes } });
+        navigate('/ingredients-list/:recipeId', { state: { recipeId, recipes } });
     };
 
-    const handleRecipePost = async (e) => {
-        e.preventDefault();
-    
-        const newRecipe = {
-            fields: {
-                name: { stringValue: recipeName },
-                servings: { integerValue: servings.toString() },
-                ingredients: {
-                    arrayValue: { values: [] }
-                }
-            }
-        };
 
-        try {
-            const addedRecipe = await addRecipe(newRecipe);
-            setRecipes([...recipes, addedRecipe]);
-        }
-            catch(error) {
-                console.error("Error adding recipe:", error);
-            }
-    
-        const url = `https://firestore.googleapis.com/v1/projects/recipe-app-charliechase96/databases/(default)/documents/recipes`;
-    
-        getAuth().onAuthStateChanged(user => {
-            if (user) {
-                user.getIdToken().then(idToken => {
-                    fetch(url, {
-                        method: 'POST',
-                        headers: { 
-                            'Authorization': `Bearer ${idToken}`,
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(formatRecipeData(newRecipe))
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        console.log('Recipe created:', data);
-                        setRecipes([...recipes, newRecipe]);
-                        setRecipeName('');
-                        setServings(0);
-                    })
-                    .catch(error => console.error('Error creating recipe:', error));
-                });
-            } else {
-                console.error('No user logged in');
-            }
-        });
-    }
+    function postRecipe(event, userId, recipeData) {
+        event.preventDefault();
 
-    function formatRecipeData(recipe) {
-        return {
-            fields: {
-                name: { stringValue: recipe.fields.name },
-                servings: { integerValue: recipe.fields.servings.toString() },
-                ingredients: {
-                    arrayValue: { values: [] }
-                }
-            }
-        };
+        const userRecipeRef = collection(db, 'users', userId, 'recipes');
+
+        addDoc(userRecipeRef, recipeData)
+            .then(docRef => {
+                console.log("Document written with ID: ", docRef.id);
+            })
+            .catch(error => {
+                console.error("Error adding document: ", error);
+            });
     }
 
     return (
         <div>
-            <form onSubmit={handleRecipePost}>
+            <form onSubmit={postRecipe}>
                 <label>Recipe Name</label>
                 <input 
                     type="text" 
@@ -121,15 +89,15 @@ function RecipeForm() {
                 </button>
             </form>
             <br/>
-            <h3>Click a recipe to see the ingredients list!</h3>
+            <h3>Click a recipe's ingredients button to see the ingredients list!</h3>
             <br/>
             <ul className="recipe-list">
-                {recipes.map((recipe, index) => (
+                {recipes.map((recipe) => (
                 <li>
                     <Recipe 
                         recipe={recipe} 
-                        key={index}
-                        onRecipeDelete={handleDeleteRecipe}
+                        key={recipe.id}
+                        onRecipeDelete={deleteRecipe}
                         onOpenIngredientsList={openIngredientsList}
                         />
                 </li>
