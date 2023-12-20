@@ -15,21 +15,19 @@ function RecipeForm() {
 
     const url = "https://firestore.googleapis.com/v1/projects/recipe-app-charliechase96/databases/(default)/documents/recipes";
 
-    useEffect(() => {
-        function fetchRecipes() {
-          fetch(url)
-            .then(response => {
-              if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-              }
-              return response.json();
-            })
-            .then(data => {
-              setRecipes(data);
-            });
-        }
-        fetchRecipes();
-      }, []);
+    
+    function fetchRecipes() {
+        fetch(url)
+        .then(response => {
+            if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            setRecipes(data);
+        });
+    }
 
 
       function deleteRecipe(userId, recipeId, setRecipes) {
@@ -99,8 +97,11 @@ function RecipeForm() {
                 </button>
             </form>
             <br/>
-            <h3>Click a recipe's ingredients button to see the ingredients list!</h3>
-            <br/>
+            <button 
+                onClick={fetchRecipes}
+            >
+                Click to see recipes!
+            </button>
             <ul className="recipe-list">
                 {recipes.map((recipe) => (
                 <li>
