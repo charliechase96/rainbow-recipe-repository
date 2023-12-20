@@ -23,9 +23,10 @@ function SignUp() {
   };
 
   return (
-    <div>
+    <div className='signup-form'>
+      <h1>Welcome to The Recipe App!</h1>
       <form onSubmit={handleSignUp}>
-        <h1>Sign Up</h1>
+        <h3>Sign Up</h3>
         <input 
           type="email" 
           value={email} 
@@ -40,7 +41,8 @@ function SignUp() {
         />
         <button type="submit">Sign Up</button>
       </form>
-      <Link to="/" element={<Login />}>Already have an account? Log In.</Link>
+      <br/>
+      <Link to="/" element={<Login />}>Already have an account? Log In!</Link>
     </div>
   );
 }
