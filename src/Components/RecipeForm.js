@@ -53,15 +53,25 @@ function RecipeForm() {
     function postRecipe(event, userId, recipeData) {
         event.preventDefault();
 
-        const userRecipeRef = collection(db, 'users', userId, 'recipes');
+        const formattedRecipeData = formatRecipeData(recipeData);
 
-        addDoc(userRecipeRef, recipeData)
+        const userRecipeRef = collection(db, 'userProfiles', userId, 'recipes');
+
+        addDoc(userRecipeRef, formattedRecipeData)
             .then(docRef => {
                 console.log("Document written with ID: ", docRef.id);
             })
             .catch(error => {
                 console.error("Error adding document: ", error);
             });
+    }
+
+    function formatRecipeData(recipeData) {
+        return {
+            name: String(recipeData.name),
+            servings: String(recipeData.servings),
+            ingredients: Array.isArray(recipeData.ingredients) ? recipeData.ingredients : []
+        };
     }
 
     return (
