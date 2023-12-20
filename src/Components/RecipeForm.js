@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { getAuth } from "firebase/auth";
 import { fetchRecipes, addRecipe, deleteRecipe } from '../firestoreService';
+import Recipe from "./Recipe";
 
 function RecipeForm() {
     const [recipeName, setRecipeName] = useState('');
@@ -122,22 +123,15 @@ function RecipeForm() {
             <br/>
             <h3>Click a recipe to see the ingredients list!</h3>
             <br/>
-            <ul>
+            <ul className="recipe-list">
                 {recipes.map((recipe, index) => (
-                <li 
+                <li>
+                    <Recipe 
+                        recipe={recipe} 
                         key={index}
-                    >
-                    Name: {recipe.name}  Servings: {recipe.servings}
-                    <button 
-                        onClick={() => openIngredientsList(recipe.id)}
-                    >
-                        Ingredients
-                    </button>
-                    <button 
-                        onClick={() => handleDeleteRecipe(recipe.id)}
-                    >
-                        ✖
-                    </button>
+                        onRecipeDelete={handleDeleteRecipe}
+                        onOpenIngredientsList={openIngredientsList}
+                        />
                 </li>
                 ))}
             </ul>
