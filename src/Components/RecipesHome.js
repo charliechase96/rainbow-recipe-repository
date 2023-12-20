@@ -10,7 +10,7 @@ function RecipesHome() {
             <div>
             
                 <h1>Welcome to Your Personal Recipe App!</h1>
-                <h2>Enter recipe name and servings to get started!</h2>
+                <h3>Enter recipe name and servings to get started!</h3>
                 <br/>
                 <RecipeForm />
             </div>

@@ -113,7 +113,7 @@ function RecipeForm() {
                 <button type="submit">Create Recipe</button>
             </form>
             <br/>
-            <h2>Click a recipe to see the ingredients list!</h2>
+            <h3>Click a recipe to see the ingredients list!</h3>
             <br/>
             <ul>
                 {recipes.map((recipe, index) => (
