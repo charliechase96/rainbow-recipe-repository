@@ -16,6 +16,7 @@ function Login() {
       .then((userCredential) => {
         // Signed in
         console.log('Login successful', userCredential);
+        navigate(`/user-profile/${userCredential.user.uid}`);
         // Redirect or update UI
       })
       .catch((error) => {
@@ -28,7 +29,7 @@ function Login() {
     signInWithPopup(auth, googleAuthProvider)
       .then((result) => {
         console.log(result);
-        navigate('/home');
+        navigate(`/user-profile/${result.user.uid}`);
         // Handle successful login
       })
       .catch((error) => {
@@ -58,7 +59,7 @@ function Login() {
         />
         <button 
           type="submit"
-          diabled={!email || !password}
+          disabled={!email || !password}
         >
           Login
         </button>
