@@ -43,7 +43,7 @@ function UserProfile() {
         });
 
         return unsubscribe; // Detach listener on unmount
-    }, [navigate]);
+    }, [navigate, userId]);
 
     if (!userProfile) {
         navigate('/signup')
@@ -52,10 +52,7 @@ function UserProfile() {
 
 
     return (
-        <div>
-            <h1>{userProfile.email}'s Profile</h1>
             <RecipesHome />
-        </div>
     )
 }
 
