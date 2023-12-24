@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 // import { useNavigate } from "react-router-dom";
 import { firestore } from '../firebase';
 import { getAuth, onAuthStateChanged } from "firebase/auth";
@@ -9,20 +9,9 @@ function RecipeForm() {
     const [recipeName, setRecipeName] = useState('');
     const [servings, setServings] = useState(0);
     const [recipes, setRecipes] = useState([]);
-    const [currentUser, setCurrentUser] = useState(null);
 
-    useEffect(() => {
-        const auth = getAuth();
-
-        auth.onAuthStateChanged((user) => {
-            if (user) {
-                setCurrentUser(user);
-            }
-            else {
-                console.log("not signed in");
-            }
-        })
-    })
+    const auth = getAuth();
+    const user = auth.currentUser;
 
     async function getRecipes() {
         try {
@@ -36,7 +25,8 @@ function RecipeForm() {
     // Fetch all recipes
     async function fetchRecipes() {
         try {
-            const snapshot = await getDocs(collection(firestore, `userProfiles/${currentUser}/recipes`));
+
+            const snapshot = await getDocs(collection(firestore, `userProfiles/${auth.currentUser.uid}/recipes`));
             return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         } catch (error) {
             console.error("Error fetching recipes:", error);
@@ -46,7 +36,7 @@ function RecipeForm() {
 
     async function addRecipe(recipe) {
         try {
-            const docRef = await addDoc(collection(firestore, `userProfiles/${currentUser}/recipes`), recipe);
+            const docRef = await addDoc(collection(firestore, `userProfiles/${auth.currentUser.uid}/recipes`), recipe);
             return { id: docRef.id, ...recipe };
         } catch (error) {
             console.error("Error adding recipe:", error);
@@ -56,7 +46,7 @@ function RecipeForm() {
 
     async function deleteRecipe(recipeId) {
         try {
-            await deleteDoc(doc(firestore, `userProfiles/${currentUser}/recipes/`, recipeId));
+            await deleteDoc(doc(firestore, `userProfiles/${auth.currentUser.uid}/recipes/`, recipeId));
         } catch (error) {
             console.error("Error deleting recipe:", error);
             throw error;
@@ -65,8 +55,6 @@ function RecipeForm() {
 
     async function handleRecipePost(event, recipe) {
         event.preventDefault();
-        const auth = getAuth(); // initialize authentication
-        const user = auth.currentUser; // get the current user
         
         if (user) { // Check if user is authenticated
             try {

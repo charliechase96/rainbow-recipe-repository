@@ -4,13 +4,16 @@ import RecipesHome from './RecipesHome';
 import { getAuth } from 'firebase/auth';
 import Ingredient from './Ingredient';
 import { db } from '../firebase';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, updateDoc, arrayUnion, doc } from 'firebase/firestore';
 
 function IngredientList({ recipeId }) {
 
     const [ingredients, setIngredients] = useState([]);
     const [name, setName] = useState('');
     const [amount, setAmount] = useState('');
+
+    const auth = getAuth();
+    const user = auth.currentUser;
 
     function formatIngredientsData(ingredients) {
         return {
@@ -41,73 +44,57 @@ function IngredientList({ recipeId }) {
         setAmount(event.target.value);
     };
 
-    function fetchIngredients() {
-        const recipesCollectionRef = collection(db, 'recipes');
+    async function getIngredients() {
+        try {
+            const fetchedIngredients = fetchIngredients();
+            setIngredients(fetchedIngredients);
+        } catch (error) {
+            console.error("Error fetching recipes:", error);
+        }
+    }
 
-        getDocs(recipesCollectionRef)
+    function fetchIngredients() {
+        const ingredientsCollectionRef = collection(db, `userProfiles/${auth.currentUser.uid}/recipes/${recipeId}/ingredients`);
+
+        getDocs(ingredientsCollectionRef)
             .then(snapshot => {
-                snapshot.docs.forEach(doc => {
-                    console.log(`${doc.id} =>`, doc.data().ingredients);
-                });
+                snapshot.docs.map(doc => ({id: doc.id, ...doc.data()}));
             })
             .catch(error => {
                 console.error("Error fetching ingredients:", error);
             })
     }
     
-    function patchIngredients(event) {
-        const url = `https://firestore.googleapis.com/v1/projects/recipe-app-charliechase96/databases/(default)/documents/recipes/${recipeId}`;
-
+    function addIngredient(event) {
         event.preventDefault();
+        // Reference to the specific recipe document
+        const recipeDocRef = doc(db, `userProfiles/${auth.currentUser.uid}/recipes/${recipeId}`);
     
+        // New ingredient data
         const newIngredient = { name, amount };
-        if (newIngredient.name.trim()) {
-            const updatedIngredients = [...ingredients, newIngredient];
-            const formattedData = formatIngredientsData(updatedIngredients);
     
-            const auth = getAuth();
-            const user = auth.currentUser;
-            if (!user) {
-                console.error("No user logged in");
-                return;
-            }
-    
-            user.getIdToken().then(idToken => {
-                return fetch(url, {
-                    method: 'PATCH',
-                    headers: { 
-                        'Authorization': `Bearer ${idToken}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(formattedData)
-                });
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(() => {
-                setIngredients(updatedIngredients);
-                setName("");
-                setAmount("");
-            })
-            .catch(error => {
-                console.error('Error updating ingredients:', error);
-            });
-        }
+        // Update the document
+        updateDoc(recipeDocRef, {
+            ingredients: arrayUnion(newIngredient)
+        })
+        .then(() => {
+            // Handle successful addition, maybe update local state or UI
+            setIngredients(prevIngredients => [...prevIngredients, newIngredient]);
+        })
+        .catch((error) => {
+            console.error("Error adding ingredient:", error);
+        });
     }
+    
     
 
     function handleRemoveIngredient(index) {
-        const url = `https://firestore.googleapis.com/v1/projects/recipe-app-charliechase96/databases/(default)/documents/recipes/${recipeId}`;
+        const url = `https://firestore.googleapis.com/v1/projects/recipe-app-charliechase96/databases/(default)/documents/useProfiles/${auth.currentUser.uid}/recipes/${recipeId}`;
 
         const updatedIngredients = ingredients.filter((_, i) => i !== index);
         const formattedData = formatIngredientsData(updatedIngredients);
     
-        const auth = getAuth();
-        const user = auth.currentUser;
+        
         if (!user) {
             console.error("No user logged in");
             return;
@@ -142,9 +129,9 @@ function IngredientList({ recipeId }) {
     return (
     
     <div>
-        <Link to="/home" element={<RecipesHome />}>Back to Recipe List!</Link>  
-        <form onSubmit={patchIngredients}>
-            <button onClick={fetchIngredients}>Fetch ingredients</button>
+        {/* <Link to="/home" element={<RecipesHome />}>Back to Recipe List!</Link>   */}
+        <form onSubmit={addIngredient}>
+            <button onClick={getIngredients}>Fetch ingredients</button>
             <label>Ingredient</label>
             <input
                 type="text"
