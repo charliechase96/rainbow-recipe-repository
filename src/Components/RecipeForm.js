@@ -1,13 +1,28 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 // import { useNavigate } from "react-router-dom";
-import { getAuth } from "firebase/auth";
-import { fetchRecipes, addRecipe, deleteRecipe } from '../firestoreService';
+import { firestore } from '../firebase';
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { collection, getDocs, addDoc, doc, deleteDoc } from "firebase/firestore";
 import Recipe from "./Recipe";
 
 function RecipeForm() {
     const [recipeName, setRecipeName] = useState('');
     const [servings, setServings] = useState(0);
     const [recipes, setRecipes] = useState([]);
+    const [currentUser, setCurrentUser] = useState(null);
+
+    useEffect(() => {
+        const auth = getAuth();
+
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                setCurrentUser(user);
+            }
+            else {
+                console.log("not signed in");
+            }
+        })
+    })
 
     async function getRecipes() {
         try {
@@ -15,6 +30,36 @@ function RecipeForm() {
             setRecipes(fetchedRecipes);
         } catch (error) {
             console.error("Error fetching recipes:", error);
+        }
+    }
+
+    // Fetch all recipes
+    async function fetchRecipes() {
+        try {
+            const snapshot = await getDocs(collection(firestore, `userProfiles/${currentUser}/recipes`));
+            return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        } catch (error) {
+            console.error("Error fetching recipes:", error);
+            throw error;
+        }
+    }
+
+    async function addRecipe(recipe) {
+        try {
+            const docRef = await addDoc(collection(firestore, `userProfiles/${currentUser}/recipes`), recipe);
+            return { id: docRef.id, ...recipe };
+        } catch (error) {
+            console.error("Error adding recipe:", error);
+            throw error;
+        }
+    }
+
+    async function deleteRecipe(recipeId) {
+        try {
+            await deleteDoc(doc(firestore, `userProfiles/${currentUser}/recipes/`, recipeId));
+        } catch (error) {
+            console.error("Error deleting recipe:", error);
+            throw error;
         }
     }
 
@@ -95,7 +140,7 @@ function RecipeForm() {
             <button onClick={getRecipes}>Fetch recipes</button>
             <br/>
             <ul className="recipe-list">
-                {recipes.map((recipe, index) => (
+                {recipes.map((recipe) => (
                 <li>
                     <Recipe 
                         recipe={recipe} 

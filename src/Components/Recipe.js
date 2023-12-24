@@ -10,7 +10,7 @@ function Recipe({ recipe, onRecipeDelete, recipeId }) {
     return (
         <div className="recipe">
             <button
-                onClick={onRecipeDelete}
+                onClick={() => onRecipeDelete(recipeId)}
             >
                 ✖
             </button>
