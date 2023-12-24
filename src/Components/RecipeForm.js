@@ -9,6 +9,15 @@ function RecipeForm() {
     const [servings, setServings] = useState(0);
     const [recipes, setRecipes] = useState([]);
 
+    async function getRecipes() {
+        try {
+            const fetchedRecipes = await fetchRecipes();
+            setRecipes(fetchedRecipes);
+        } catch (error) {
+            console.error("Error fetching recipes:", error);
+        }
+    }
+
     async function handleRecipePost(event, recipe) {
         event.preventDefault();
         const auth = getAuth(); // initialize authentication
@@ -83,7 +92,7 @@ function RecipeForm() {
                 </button>
             </form>
             <br/>
-            <button onClick={fetchRecipes}>Fetch recipes</button>
+            <button onClick={getRecipes}>Fetch recipes</button>
             <br/>
             <ul className="recipe-list">
                 {recipes.map((recipe, index) => (

@@ -12,6 +12,7 @@ function UserProfile() {
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
+            // console.log("Auth State Changed. Current User:", JSON.stringify(user));
             if (user) {
                 // Check if the URL userId matches the logged-in user's UID
                 if (user.uid !== userId) {
