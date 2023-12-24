@@ -1,6 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
+import IngredientList from "./IngredientList";
 
-function Recipe({ recipe, onRecipeDelete, onOpenIngredientsList }) {
+function Recipe({ recipe, onRecipeDelete, recipeId }) {
+    const [showIngredientList, setShowIngredientList] = useState(false);
+
+    function toggleIngredientList() {
+        setShowIngredientList(!showIngredientList);
+    }
     return (
         <div className="recipe">
             <button
@@ -9,12 +15,13 @@ function Recipe({ recipe, onRecipeDelete, onOpenIngredientsList }) {
                 ✖
             </button>
             <p>{recipe.name}</p>
-            <p>{recipe.servings}</p>
+            <p>{recipe.servings} {(recipe.servings > 1) ? "servings" : "serving"} </p>
             <button 
-                onClick={onOpenIngredientsList}
+                onClick={toggleIngredientList}
             >
-                Ingredients
+                { showIngredientList ? "Hide Ingredients" : "Show Ingredients"}
             </button>
+            {showIngredientList && <IngredientList recipeId={recipeId}/>}
         </div>
     )
 }

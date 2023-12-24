@@ -44,7 +44,7 @@ function UserProfile() {
                 // No user is signed in, redirect to the login page
                 navigate('/');
             }
-        });
+        })
 
         return unsubscribe; // Detach listener on unmount
     }, [navigate, userId]);

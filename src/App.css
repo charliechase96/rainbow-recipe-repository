@@ -112,11 +112,13 @@ body {
     height: fit-content;
     width: fit-content;
     text-align: center;
-    padding: 7px;
+    padding-left: 5px;
+    padding-right: 5px;
     border-radius: 5px;
     margin: auto;
     align-self: center;
-    gap: 5px;
+    gap: 50px;
+    width: 400px;
 }
 
 .recipe button {
@@ -126,4 +128,12 @@ body {
 
 .recipe-list {
     list-style-type: none;
+}
+
+.recipe-form form {
+    width: 50%; /* Adjust the width as needed */
+    display: flex;
+    flex-direction: column; /* Stack children vertically */
+    gap: 10px; /* Optional: adds space between form items */
+    margin: auto;
 }
