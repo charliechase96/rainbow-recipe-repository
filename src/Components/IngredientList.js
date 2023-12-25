@@ -45,25 +45,32 @@ function IngredientList({ recipeId }) {
     };
 
     async function fetchIngredients(event) {
-        event.preventDefault();
-        // Reference to the specific recipe document
-        const recipeDocRef = doc(db, `userProfiles/${auth.currentUser.uid}/recipes/${recipeId}`);
-    
-        try {
-            const docSnap = await getDoc(recipeDocRef);
-    
-            if (docSnap.exists() && docSnap.data().ingredients) {
-                // Retrieve just the ingredients array from the recipe document
-                const ingredientsArray = docSnap.data().ingredients;
-                setIngredients(ingredientsArray); // Update your state with the fetched ingredients
-            } else {
-                console.log("No such document or no ingredients found!");
-                setIngredients([]); // Reset or handle as needed
-            }
-        } catch (error) {
-            console.error("Error fetching ingredients:", error);
-        }
+    event.preventDefault();
+    console.log("Fetching ingredients for recipeId:", recipeId); // Debugging
+
+    if (!recipeId) {
+        console.log("No recipeId provided!");
+        return; // Exit if no recipeId
     }
+
+    const recipeDocRef = doc(db, `userProfiles/${auth.currentUser.uid}/recipes/${recipeId}`);
+    console.log("Constructed path:", recipeDocRef.path); // Check the constructed path
+
+    try {
+        const docSnap = await getDoc(recipeDocRef);
+
+        if (docSnap.exists() && docSnap.data().ingredients) {
+            const ingredientsArray = docSnap.data().ingredients;
+            console.log("Fetched ingredients:", ingredientsArray); // Check fetched data
+            setIngredients(ingredientsArray);
+        } else {
+            console.log("No such document or ingredients found at:", recipeDocRef.path);
+            setIngredients([]);
+        }
+    } catch (error) {
+        console.error("Error fetching ingredients:", error);
+    }
+}
     
     function addIngredient(event) {
         event.preventDefault();
@@ -109,10 +116,11 @@ function IngredientList({ recipeId }) {
     return (
     
     <div className='ingredients-list'>
-        {/* <Link to="/home" element={<RecipesHome />}>Back to Recipe List!</Link>   */}
+        <Link to="/home" element={<RecipesHome />}>Back to Recipe List!</Link>  
+        <br/>
         <form onSubmit={addIngredient}>
             <button onClick={fetchIngredients}>Fetch ingredients</button>
-            <label>Ingredient</label>
+            <label>Add an Ingredient</label>
             <input
                 type="text"
                 placeholder='ingredient name'
@@ -127,13 +135,15 @@ function IngredientList({ recipeId }) {
                 onChange={handleAmountChange}
                 required
             />
-            <button 
+            <button
+                className='add-button' 
                 type="submit"
                 disabled={!name || !amount}
             >
-                Add
+                Add ingredient
             </button>
             </form>
+            <br/>
             <ul>
             {ingredients.map((ingredient, index) => (
                 <li >

@@ -164,11 +164,38 @@ body {
 
 .ingredients-list {
     background-color: rgba(255, 255, 255, 0.5);
-    padding: 10px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    height: fit-content;
+    width: fit-content;
+    text-align: center;
+    padding: 50px;
+    border-radius: 15px;
+}
+
+.ingredients-list form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column; /* Stack children vertically */
+    gap: 20px; /* Optional: adds space between form items */
+    margin: auto;
+}
+
+.ingredients-list button {
+    margin-top: 10px;
+    width: 250px;
+    background-color: rgba(185, 185, 255, 0.5);
+    border-radius: 5px;
+    border-color: rgba(32, 32, 165, 0.25);
+}
+
+.ingredients-list .add-button {
+    width: fit-content !important;
+    padding-left: 10px !important;
+    padding-right: 10px !important;
 }
 
 

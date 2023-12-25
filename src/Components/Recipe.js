@@ -1,12 +1,12 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import IngredientList from "./IngredientList";
 
 function Recipe({ recipe, onRecipeDelete, recipeId }) {
     const [showIngredientList, setShowIngredientList] = useState(false);
 
-    function toggleIngredientList() {
-        setShowIngredientList(!showIngredientList);
-    }
+    const navigate = useNavigate();
+
     return (
         <div className="recipe">
             <button
@@ -17,9 +17,9 @@ function Recipe({ recipe, onRecipeDelete, recipeId }) {
             <p>{recipe.name}</p>
             <p>{recipe.servings} {(recipe.servings > 1) ? "servings" : "serving"} </p>
             <button 
-                onClick={toggleIngredientList}
+                onClick={() => navigate(`/ingredients-list/${recipe.id}`)}
             >
-                { showIngredientList ? "Hide Ingredients" : "Show Ingredients"}
+                Show Ingredients
             </button>
             {showIngredientList && <IngredientList recipeId={recipeId}/>}
         </div>
