@@ -1,10 +1,10 @@
 import React from "react";
 
-function Ingredient({ ingredient, onRemoveIngredient }) {
+function Ingredient({ recipeId, ingredient, onRemoveIngredient }) {
     return (
         <div className="ingredient">
             <button
-                onClick={onRemoveIngredient}
+                onClick={() => onRemoveIngredient(recipeId, ingredient)}
             >
                 ✖
             </button>

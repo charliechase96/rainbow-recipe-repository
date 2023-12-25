@@ -11,7 +11,7 @@ function IngredientList() {
     const [ingredients, setIngredients] = useState([]);
     const [name, setName] = useState('');
     const [amount, setAmount] = useState('');
-    
+
     const params = useParams();
     const recipeId = params.recipeId;
 
@@ -92,6 +92,8 @@ function IngredientList() {
         .then(() => {
             // Handle successful addition, maybe update local state or UI
             setIngredients(prevIngredients => [...prevIngredients, newIngredient]);
+            setName("");
+            setAmount("");
         })
         .catch((error) => {
             console.error("Error adding ingredient:", error);
@@ -103,14 +105,21 @@ function IngredientList() {
     async function deleteIngredient(recipeId, ingredientToRemove) {
         // Reference to the specific recipe document
         const recipeRef = doc(db, `userProfiles/${auth.currentUser.uid}/recipes/${recipeId}`);
-    
+        
         try {
-            // Update the document, removing the ingredient from the array
+            // Directly remove the ingredient from the array in Firebase
             await updateDoc(recipeRef, {
                 ingredients: arrayRemove(ingredientToRemove)
             });
+    
+            // Fetch the updated ingredients to reflect the change in local state
+            const updatedSnap = await getDoc(recipeRef);
+            if (updatedSnap.exists() && updatedSnap.data().ingredients) {
+                setIngredients(updatedSnap.data().ingredients);
+            } else {
+                setIngredients([]);
+            }
             console.log(`Ingredient removed from recipe: ${recipeId}`);
-            // Update local state or UI as necessary
         } catch (error) {
             console.error("Error removing ingredient:", error);
         }
@@ -155,6 +164,7 @@ function IngredientList() {
                     <Ingredient 
                         key={index} 
                         ingredient={ingredient}
+                        recipeId={recipeId}
                         onRemoveIngredient={deleteIngredient}
                     />
                 </li>
