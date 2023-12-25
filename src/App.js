@@ -39,7 +39,7 @@ function App() {
         <Route path="/user-profile/:userId" element={<UserProfile />} />
         <Route path="/home" element={<RecipesHome />} />
         <Route path="/recipe-form" element={<RecipeForm />} />
-        <Route path="/ingredients-list/:recipId" element={<IngredientList />} />
+        <Route path="/ingredients-list/:recipeId" element={<IngredientList />} />
       </Routes>
     </BrowserRouter> 
     </>

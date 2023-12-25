@@ -155,7 +155,17 @@ body {
     margin: auto;
     align-self: center;
     gap: 50px;
-    width: 250px;
+    width: 500px;
+}
+
+.ingredient button {
+    width: fit-content !important;
+    margin: auto !important;
+}
+
+.ingredient p {
+    margin: 0 auto;
+    padding: 15px;
 }
 
 .ingredients-list ul {
@@ -192,10 +202,10 @@ body {
     border-color: rgba(32, 32, 165, 0.25);
 }
 
-.ingredients-list .add-button {
-    width: fit-content !important;
-    padding-left: 10px !important;
-    padding-right: 10px !important;
+.ingredients-list input {
+    display: block;
+    margin-bottom: 10px;
+    width: 300px;
 }
 
 

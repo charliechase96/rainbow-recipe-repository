@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
-import IngredientList from "./IngredientList";
+// import IngredientList from "./IngredientList";
 
 function Recipe({ recipe, onRecipeDelete, recipeId }) {
-    const [showIngredientList, setShowIngredientList] = useState(false);
+    // const [showIngredientList, setShowIngredientList] = useState(false);
 
     const navigate = useNavigate();
 
@@ -21,7 +21,7 @@ function Recipe({ recipe, onRecipeDelete, recipeId }) {
             >
                 Show Ingredients
             </button>
-            {showIngredientList && <IngredientList recipeId={recipeId}/>}
+            {/* {showIngredientList && <IngredientList recipeId={recipeId}/>} */}
         </div>
     )
 }

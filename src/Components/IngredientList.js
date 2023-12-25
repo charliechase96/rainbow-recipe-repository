@@ -1,16 +1,21 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import RecipesHome from './RecipesHome';
 import { getAuth } from 'firebase/auth';
 import Ingredient from './Ingredient';
 import { db } from '../firebase';
-import { collection, getDoc, updateDoc, arrayUnion, doc, arrayRemove } from 'firebase/firestore';
+import { getDoc, updateDoc, arrayUnion, doc, arrayRemove } from 'firebase/firestore';
 
-function IngredientList({ recipeId }) {
+function IngredientList() {
 
     const [ingredients, setIngredients] = useState([]);
     const [name, setName] = useState('');
     const [amount, setAmount] = useState('');
+    
+    const params = useParams();
+    const recipeId = params.recipeId;
+
+    console.log(recipeId)
 
     const auth = getAuth();
     const user = auth.currentUser;
