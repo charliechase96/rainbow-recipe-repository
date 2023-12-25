@@ -4,7 +4,7 @@ import RecipesHome from './RecipesHome';
 import { getAuth } from 'firebase/auth';
 import Ingredient from './Ingredient';
 import { db } from '../firebase';
-import { collection, getDocs, updateDoc, arrayUnion, doc } from 'firebase/firestore';
+import { collection, getDoc, updateDoc, arrayUnion, doc, arrayRemove } from 'firebase/firestore';
 
 function IngredientList({ recipeId }) {
 
@@ -44,25 +44,25 @@ function IngredientList({ recipeId }) {
         setAmount(event.target.value);
     };
 
-    async function getIngredients() {
+    async function fetchIngredients(event) {
+        event.preventDefault();
+        // Reference to the specific recipe document
+        const recipeDocRef = doc(db, `userProfiles/${auth.currentUser.uid}/recipes/${recipeId}`);
+    
         try {
-            const fetchedIngredients = fetchIngredients();
-            setIngredients(fetchedIngredients);
+            const docSnap = await getDoc(recipeDocRef);
+    
+            if (docSnap.exists() && docSnap.data().ingredients) {
+                // Retrieve just the ingredients array from the recipe document
+                const ingredientsArray = docSnap.data().ingredients;
+                setIngredients(ingredientsArray); // Update your state with the fetched ingredients
+            } else {
+                console.log("No such document or no ingredients found!");
+                setIngredients([]); // Reset or handle as needed
+            }
         } catch (error) {
-            console.error("Error fetching recipes:", error);
+            console.error("Error fetching ingredients:", error);
         }
-    }
-
-    function fetchIngredients() {
-        const ingredientsCollectionRef = collection(db, `userProfiles/${auth.currentUser.uid}/recipes/${recipeId}/ingredients`);
-
-        getDocs(ingredientsCollectionRef)
-            .then(snapshot => {
-                snapshot.docs.map(doc => ({id: doc.id, ...doc.data()}));
-            })
-            .catch(error => {
-                console.error("Error fetching ingredients:", error);
-            })
     }
     
     function addIngredient(event) {
@@ -88,50 +88,30 @@ function IngredientList({ recipeId }) {
     
     
 
-    function handleRemoveIngredient(index) {
-        const url = `https://firestore.googleapis.com/v1/projects/recipe-app-charliechase96/databases/(default)/documents/useProfiles/${auth.currentUser.uid}/recipes/${recipeId}`;
-
-        const updatedIngredients = ingredients.filter((_, i) => i !== index);
-        const formattedData = formatIngredientsData(updatedIngredients);
+    async function deleteIngredient(recipeId, ingredientToRemove) {
+        // Reference to the specific recipe document
+        const recipeRef = doc(db, `userProfiles/${auth.currentUser.uid}/recipes/${recipeId}`);
     
-        
-        if (!user) {
-            console.error("No user logged in");
-            return;
-        }
-    
-        user.getIdToken().then(idToken => {
-            return fetch(url, {
-                method: 'PATCH',
-                headers: { 
-                    'Authorization': `Bearer ${idToken}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(formattedData)
+        try {
+            // Update the document, removing the ingredient from the array
+            await updateDoc(recipeRef, {
+                ingredients: arrayRemove(ingredientToRemove)
             });
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then(() => {
-            setIngredients(updatedIngredients);
-        })
-        .catch(error => {
-            console.error('Error deleting ingredient:', error);
-        });
+            console.log(`Ingredient removed from recipe: ${recipeId}`);
+            // Update local state or UI as necessary
+        } catch (error) {
+            console.error("Error removing ingredient:", error);
+        }
     }
 
     
     
     return (
     
-    <div>
+    <div className='ingredients-list'>
         {/* <Link to="/home" element={<RecipesHome />}>Back to Recipe List!</Link>   */}
         <form onSubmit={addIngredient}>
-            <button onClick={getIngredients}>Fetch ingredients</button>
+            <button onClick={fetchIngredients}>Fetch ingredients</button>
             <label>Ingredient</label>
             <input
                 type="text"
@@ -160,7 +140,7 @@ function IngredientList({ recipeId }) {
                     <Ingredient 
                         key={index} 
                         ingredient={ingredient}
-                        onRemoveIngredient={handleRemoveIngredient}
+                        onRemoveIngredient={deleteIngredient}
                     />
                 </li>
             ))}
