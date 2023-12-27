@@ -22,6 +22,8 @@ function Login() {
       .catch((error) => {
         console.error('Error logging in:', error.message);
         window.alert('Error logging in:', error.message); // Handle errors here
+        setEmail("");
+        setPassword("");
       });
   };
 
