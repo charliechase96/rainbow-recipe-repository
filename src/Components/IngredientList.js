@@ -20,33 +20,39 @@ function IngredientList() {
     const auth = getAuth();
     const user = auth.currentUser;
 
-    function formatIngredientsData(ingredients) {
-        return {
-            fields: {
-                ingredients: {
-                    arrayValue: {
-                        values: ingredients.map(ingredient => {
-                            return {
-                                mapValue: {
-                                    fields: {
-                                        name: { stringValue: ingredient.name },
-                                        amount: { stringValue: ingredient.amount }
-                                        }
-                                    }
-                                };
-                            })
-                        }
-                    }
-                }
-            };
-        }
+    // function formatIngredientsData(ingredients) {
+    //     return {
+    //         fields: {
+    //             ingredients: {
+    //                 arrayValue: {
+    //                     values: ingredients.map(ingredient => {
+    //                         return {
+    //                             mapValue: {
+    //                                 fields: {
+    //                                     name: { stringValue: ingredient.name },
+    //                                     amount: { stringValue: ingredient.amount }
+    //                                     }
+    //                                 }
+    //                             };
+    //                         })
+    //                     }
+    //                 }
+    //             }
+    //         };
+    //     }
 
     function handleIngredientName(event) {
         setName(event.target.value);
     };
 
     function handleAmountChange(event) {
-        setAmount(event.target.value);
+        let value = parseInt(event.target.value);
+
+        if (value < 0) {
+            value = 0;
+        }
+
+        setAmount(value);
     };
 
     async function fetchIngredients(event) {

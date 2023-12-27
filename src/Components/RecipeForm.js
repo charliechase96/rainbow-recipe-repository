@@ -95,7 +95,13 @@ function RecipeForm() {
     }
 
     function handleServingSize(event) {
-        setServings(event.target.value);
+        let value = parseInt(event.target.value);
+
+        if (value < 0) {
+            value = 0;
+        }
+
+        setServings(value);
     }
 
     return (
