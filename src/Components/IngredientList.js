@@ -46,13 +46,14 @@ function IngredientList() {
     };
 
     function handleAmountChange(event) {
-        let value = parseInt(event.target.value);
+        let value = (event.target.value);
 
         if (value < 0) {
             value = 0;
         }
 
-        setAmount(value);
+        const filteredValue = value.replace(/[-!@#$%^&*()]/g, '');
+        setAmount(filteredValue);
     };
 
     async function fetchIngredients(event) {
