@@ -21,7 +21,7 @@ function Login() {
       })
       .catch((error) => {
         console.error('Error logging in:', error.message);
-        // Handle errors here
+        window.alert('Error logging in:', error.message); // Handle errors here
       });
   };
 
@@ -34,7 +34,7 @@ function Login() {
       })
       .catch((error) => {
         console.error(error);
-        // Handle errors
+        window.alert('Error:', error); // Handle errors
       });
   };
 

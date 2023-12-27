@@ -57,7 +57,7 @@ function UserProfile() {
 
     // Render the RecipesHome component or user profile details
     return (
-        <RecipesHome userProfile={userProfile}/>
+        <RecipesHome />
     )
 }
 
