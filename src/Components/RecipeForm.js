@@ -4,6 +4,7 @@ import { firestore } from '../firebase';
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { collection, getDocs, addDoc, doc, deleteDoc } from "firebase/firestore";
 import Recipe from "./Recipe";
+import Footer from "./Footer";
 
 function RecipeForm() {
     const [recipeName, setRecipeName] = useState('');
@@ -105,6 +106,7 @@ function RecipeForm() {
     }
 
     return (
+        <>
         <div className="recipe-form">
             <form onSubmit={(event) => handleRecipePost(event, { name: recipeName, servings })}>
                 <label>Recipe Name</label>
@@ -146,6 +148,8 @@ function RecipeForm() {
                 ))}
             </ul>
         </div>
+        <Footer />
+        </>
     )
 }
 

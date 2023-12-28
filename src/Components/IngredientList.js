@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import RecipesHome from './RecipesHome';
 import { getAuth } from 'firebase/auth';
 import Ingredient from './Ingredient';
+import Footer from './Footer';
 import { db } from '../firebase';
 import { getDoc, updateDoc, arrayUnion, doc, arrayRemove } from 'firebase/firestore';
 
@@ -135,7 +136,7 @@ function IngredientList() {
     
     
     return (
-    
+    <>
     <div className='ingredients-list'>
         <Link to="/home" element={<RecipesHome />}>Back to Recipe List!</Link>  
         <br/>
@@ -178,6 +179,8 @@ function IngredientList() {
             ))}
         </ul>
         </div>
+        <Footer />
+        </>
         );
     }
 

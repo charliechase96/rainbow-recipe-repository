@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../firebase';
 import Login from './Login';
+import Footer from './Footer';
 
 function SignUp() {
   const [email, setEmail] = useState('');
@@ -24,6 +25,7 @@ function SignUp() {
   };
 
   return (
+    <>
     <div className='signup-form'>
       <h1>Welcome to The Rainbow Recipe Repository!</h1>
       <form onSubmit={handleSignUp}>
@@ -52,6 +54,8 @@ function SignUp() {
       <br/>
       <Link to="/" element={<Login />}>Already have an account? Log In!</Link>
     </div>
+      <Footer />
+    </>
   );
 }
 

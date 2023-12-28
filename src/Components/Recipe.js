@@ -1,6 +1,5 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-// import IngredientList from "./IngredientList";
 
 function Recipe({ recipe, onRecipeDelete, recipeId }) {
     // const [showIngredientList, setShowIngredientList] = useState(false);

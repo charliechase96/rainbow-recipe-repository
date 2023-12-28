@@ -4,6 +4,7 @@ import { auth, firestore } from '../firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import RecipesHome from './RecipesHome';
+import Footer from './Footer';
 
 function UserProfile() {
     const [userProfile, setUserProfile] = useState(null);
@@ -57,7 +58,10 @@ function UserProfile() {
 
     // Render the RecipesHome component or user profile details
     return (
-        <RecipesHome />
+        <>
+            <RecipesHome />
+            <Footer />
+        </>
     )
 }
 

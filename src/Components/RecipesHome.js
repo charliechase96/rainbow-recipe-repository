@@ -1,6 +1,7 @@
 import React from "react";
 import LogoutButton from "./LogoutButton";
 import RecipeForm from "./RecipeForm";
+import Footer from "./Footer";
 
 function RecipesHome() {
 
@@ -14,6 +15,7 @@ function RecipesHome() {
                 <br/>
                 <RecipeForm />
             </div>
+                <Footer />
         </>
     )
 }

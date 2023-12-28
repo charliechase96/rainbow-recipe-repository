@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { auth, googleAuthProvider } from '../firebase';
 import { signInWithPopup, signInWithEmailAndPassword } from 'firebase/auth';
 import SignUp from './SignUp';
+import Footer from './Footer';
 
 function Login() {
   const navigate = useNavigate();
@@ -41,6 +42,7 @@ function Login() {
   };
 
   return (
+    <>
     <div className='login-form'>
       <h1>Welcome to The Rainbow Recipe Repository!</h1>
       <form onSubmit={handleLogin}>
@@ -72,6 +74,8 @@ function Login() {
       <h3>Login with Google</h3>
       <button onClick={signInWithGoogle}>Login with Google</button>
     </div>
+    <Footer />
+    </>
   );
 }
 
