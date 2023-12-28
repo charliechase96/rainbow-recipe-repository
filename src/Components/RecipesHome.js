@@ -9,7 +9,7 @@ function RecipesHome() {
                 <LogoutButton />
             <div className="recipes-home">
             
-                <h1>Welcome to Your Personal Recipe App!</h1>
+                <h1>Welcome to Your Personal Rainbow Recipe Repository!</h1>
                 <h3>Enter recipe name and servings to get started!</h3>
                 <br/>
                 <RecipeForm />

@@ -25,7 +25,7 @@ function SignUp() {
 
   return (
     <div className='signup-form'>
-      <h1>Welcome to The Recipe App!</h1>
+      <h1>Welcome to The Rainbow Recipe Repository!</h1>
       <form onSubmit={handleSignUp}>
         <h3>Sign Up</h3>
         <input 

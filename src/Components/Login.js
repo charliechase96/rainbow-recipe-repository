@@ -42,7 +42,7 @@ function Login() {
 
   return (
     <div className='login-form'>
-      <h1>Welcome to The Recipe App</h1>
+      <h1>Welcome to The Rainbow Recipe Repository!</h1>
       <form onSubmit={handleLogin}>
         <h3>Login with Email and Password</h3>
         <input 

@@ -1,4 +1,4 @@
-# Recipe App
+# Rainbow Recipe Repository: A Recipe App
 
 A personal recipe app where the user can log all of their favorite recipes for easy access!
 
