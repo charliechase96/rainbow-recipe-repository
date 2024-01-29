@@ -4,7 +4,7 @@ function Footer() {
     return (
         <footer className="footer">
             <img 
-                src="https://i.imgur.com/EULjniJ.png" 
+                src="https://i.imgur.com/yt7qhEs.png" 
                 alt="Charlie Chase Productions Logo"
             />
         </footer>
